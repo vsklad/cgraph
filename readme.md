@@ -54,8 +54,8 @@ CGraph takes the following parameters:
     
 Where:
 
-- &ltinput file name&gt - input DIMACS CNF file name
-- &ltoutput file name&gt - output Graph ML file name
+- input file name - input DIMACS CNF file name
+- output file name - output Graph ML file name
 - w - include edge weight and cardinality
 
 ## Acknowledgements & References
