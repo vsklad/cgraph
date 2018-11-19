@@ -21,8 +21,8 @@ This representation is "incomplete", that is, the original CNF formula cannot be
 
 Optionally, CGraph may output edge weight and cardinality. We define edge cardinality as the number of clauses the particular pair of variables appears in. Weight is calculated as follows:
 
-- <edge clause weight> = 2 / (<clause size> * (<clause size> - 1))
-- <edge weight> = sum(<edge clause weight>) for all clauses that contain the variables pair
+- edge_clause_weight = 2 / (clause_size * (clause_size - 1))
+- edge_weight = sum(edge_clause_weight) for all clauses that contain the variables pair
     
 This definition is consistent with the one used in [5] and ensures the sum of edge weights introduced by a single clause is 1.
 
@@ -50,12 +50,12 @@ CGraph has no external dependencies other than [C++ STL](https://en.wikipedia.or
 
 CGraph takes the following parameters:
 
-    cgraph [-w] <input file name> [<output file name>]
+    cgraph [-w] input_file_name> [output_file_name]
     
 Where:
 
-- input file name - input DIMACS CNF file name
-- output file name - output Graph ML file name
+- input_file_name - input DIMACS CNF file name
+- output_file_name - output Graph ML file name
 - w - include edge weight and cardinality
 
 ## Acknowledgements & References
