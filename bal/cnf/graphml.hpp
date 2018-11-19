@@ -9,6 +9,7 @@
 #define graphml_h
 
 #include <set>
+#include <map>
 #include "streamable.hpp"
 #include "cnf.hpp"
 
@@ -19,7 +20,7 @@ namespace bal {
     // there is an edge between two variables if those variables occur in the same clause
     class GraphMLStreamWriter: public StreamWriter<Cnf> {
     protected:
-        void write_header(const Cnf& value) {
+        virtual void write_header(const Cnf& value) {
             stream() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
             stream() << "<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">" << std::endl;
             stream() << "<graph id=\"CNF\" edgedefault=\"undirected\">" << std::endl;
@@ -88,7 +89,7 @@ namespace bal {
         virtual void write_clauses(const Cnf& value) {
             stream() << std::dec;
             std::set<uint64_t> existing_edges;
-
+            
             const uint32_t* data = value.data();
             const uint32_t* data_end = data + value.data_size();
             while (data < data_end) {
@@ -108,7 +109,7 @@ namespace bal {
                         };
                     };
                 };
-
+                
                 data += _clause_memory_size(data);
             };
         };
@@ -123,6 +124,75 @@ namespace bal {
             write_footer(value);
         };
     };
+    
+    class GraphMLWeightedStreamWriter: public GraphMLStreamWriter {
+    protected:
+        virtual void write_header(const Cnf& value) override {
+            GraphMLStreamWriter::write_header(value);
+            stream() << "<key id=\"e_cardinality\" for=\"edge\" attr.name=\"cardinality\" attr.type=\"int\"/>" << std::endl;
+            stream() << "<key id=\"e_weight\" for=\"edge\" attr.name=\"weight\" attr.type=\"double\"/>" << std::endl;
+        };
+        
+        virtual void write_clauses(const Cnf& value) override {
+            typedef struct {
+                unsigned cardinality;
+                double weight;
+            } edge_data_t;
+            
+            stream() << std::dec;
+            std::map<uint64_t, edge_data_t> existing_edges;
+            
+            const uint32_t* data = value.data();
+            const uint32_t* data_end = data + value.data_size();
+            while (data < data_end) {
+                // iterate literal pairs
+                // it is guaranteed that the sequence is sorted and no duplicates exist
+                // weight is calculated such that the sum of weights of edges generated from a clause is 1
+                for (auto i = 0; i < _clause_size(data); i++) {
+                    if (_clause_size(data) > 1) {
+                        uint16_t cardinality = 1;
+                        if (_clause_size(data) < 4) {
+                            cardinality = get_cardinality_uint16(_clause_flags(data));
+                        };
+                        
+                        const double weight = 2.0 * cardinality / _clause_size(data) / (_clause_size(data) - 1);
+                        
+                        for (auto j = i + 1; j < _clause_size(data); j++) {
+                            const variableid_t source = literal_t__variable_id(_clause_literal(data, i));
+                            const variableid_t target = literal_t__variable_id(_clause_literal(data, j));
+                            const uint64_t key = ((uint64_t)target << 32) | source;
+                            
+                            // check if the adge exists already; ignore if so, add otherwise
+                            auto it = existing_edges.find(key);
+                            if (it == existing_edges.end()) {
+                                const edge_data_t edge_data{cardinality, weight};
+                                existing_edges.insert({key, edge_data});
+                            } else {
+                                it->second.cardinality += cardinality;
+                                it->second.weight += weight;
+                            };
+                        };
+                    };
+                };
+                
+                data += _clause_memory_size(data);
+            };
+            
+            for (auto edge: existing_edges) {
+                const variableid_t source = edge.first & 0xFFFFFFFF;
+                const variableid_t target = edge.first >> 32;
+                
+                stream() << "<edge source=\"v" << literal_t(variable_t(source)) << "\" target=\"v" << literal_t(variable_t(target)) << "\">" << std::endl;
+                stream() << "<data key=\"e_cardinality\">" << edge.second.cardinality << "</data>" << std::endl;
+                stream() << "<data key=\"e_weight\">" << edge.second.weight << "</data>" << std::endl;
+                stream() << "</edge>" << std::endl;
+            };
+        };
+        
+    public:
+        GraphMLWeightedStreamWriter(std::ostream& stream): GraphMLStreamWriter(stream) {};
+    };
+    
 };
 
 #endif /* graphml_h */
