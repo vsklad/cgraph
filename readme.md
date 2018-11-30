@@ -4,6 +4,8 @@ CGraph is a tool for generating variable incidence graph (VIG) [GraphML](http://
 - Source code is published under [MIT license](https://github.com/vsklad/cgraph/blob/master/LICENSE).
 - Source code is available on GitHub: <https://github.com/vsklad/cgraph>.
 
+[![Build Status](https://travis-ci.org/vsklad/cgraph.svg?branch=master)](https://travis-ci.org/vsklad/cgraph)
+
 ## Description
 
 Translating [SAT](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) problems into [CNF](https://en.wikipedia.org/wiki/Conjunctive_normal_form) results in formulas that are usually too large and complex for unaided human perception. Representing a [CNF](https://en.wikipedia.org/wiki/Conjunctive_normal_form) formula as a graph can be an effective means of demonstrating and analysing its structure, particularly if accompanied by graph visualization. 
@@ -39,10 +41,10 @@ Source code is hosted at GitHub with CMake (3.1) build file included.
 
 To obtain and build:
 
-git clone https://github.com/vsklad/cgraph
-cd cgraph
-cmake .
-make
+    git clone https://github.com/vsklad/cgraph
+    cd cgraph
+    cmake .
+    make
 
 CGraph has no external dependencies other than [C++ STL](https://en.wikipedia.org/wiki/Standard_Template_Library). [C++ 11](https://en.wikipedia.org/wiki/C%2B%2B11) is a requirement.
 
