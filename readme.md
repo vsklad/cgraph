@@ -44,7 +44,7 @@ To obtain and build:
     git clone https://github.com/vsklad/cgraph
     cd cgraph
     cmake .
-    make
+    cmake --build .
 
 CGraph has no external dependencies other than [C++ STL](https://en.wikipedia.org/wiki/Standard_Template_Library). [C++ 11](https://en.wikipedia.org/wiki/C%2B%2B11) is a requirement.
 
