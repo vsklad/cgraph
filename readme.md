@@ -6,6 +6,8 @@ CGraph is a tool for generating variable incidence graph (VIG) [GraphML](http://
 
 [![Build Status](https://travis-ci.org/vsklad/cgraph.svg?branch=master)](https://travis-ci.org/vsklad/cgraph)
 
+NOTE: CGraph functionality is made part of [CGen](https://github.com/vsklad/cgen). Respectively, further updates to the functionaity if any will be published in that repository.
+
 ## Description
 
 Translating [SAT](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) problems into [CNF](https://en.wikipedia.org/wiki/Conjunctive_normal_form) results in formulas that are usually too large and complex for unaided human perception. Representing a [CNF](https://en.wikipedia.org/wiki/Conjunctive_normal_form) formula as a graph can be an effective means of demonstrating and analysing its structure, particularly if accompanied by graph visualization. 
