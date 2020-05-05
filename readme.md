@@ -6,7 +6,7 @@ CGraph is a tool for generating variable incidence graph (VIG) [GraphML](http://
 
 [![Build Status](https://travis-ci.org/vsklad/cgraph.svg?branch=master)](https://travis-ci.org/vsklad/cgraph)
 
-NOTE: CGraph functionality is made part of [CGen](https://github.com/vsklad/cgen). Respectively, further updates to the functionaity if any will be published in that repository.
+NOTE: CGraph functionality is made part of [CGen](https://github.com/vsklad/cgen) as of version 1.2. Respectively, further updates to the functionaity if any will be published in that repository.
 
 ## Description
 
